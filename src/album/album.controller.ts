@@ -13,10 +13,14 @@ import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { validateId } from 'src/utils/id-validation';
+import { TrackService } from 'src/track/track.service';
 
 @Controller('album')
 export class AlbumController {
-  constructor(private readonly albumService: AlbumService) {}
+  constructor(
+    private readonly albumService: AlbumService,
+    private readonly trackService: TrackService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -51,6 +55,9 @@ export class AlbumController {
   async remove(@Param('id') id: string) {
     validateId(id);
 
-    return await this.albumService.remove(id);
+    const removeResult = await this.albumService.remove(id);
+    await this.trackService.removeAlbumRelations(id);
+
+    return removeResult;
   }
 }
