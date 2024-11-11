@@ -46,4 +46,17 @@ export class AlbumService {
   async remove(id: string) {
     return await removeEntityById('Album', id, this.albums);
   }
+
+  async removeArtistRelations(artistId: string) {
+    this.albums.forEach((album, index) => {
+      if (album.artistId === artistId) {
+        this.albums[index] = {
+          ...album,
+          artistId: null,
+        };
+      }
+    });
+
+    return 'Relations have been deleted';
+  }
 }

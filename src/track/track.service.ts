@@ -61,4 +61,17 @@ export class TrackService {
 
     return 'Relations have been deleted';
   }
+
+  async removeArtistRelations(artistId: string) {
+    this.tracks.forEach((track, index) => {
+      if (track.artistId === artistId) {
+        this.tracks[index] = {
+          ...track,
+          artistId: null,
+        };
+      }
+    });
+
+    return 'Relations have been deleted';
+  }
 }
