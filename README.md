@@ -1,30 +1,20 @@
-# Home Library Service
+# Home Library Service. Part 1.
 
 ## Prerequisites
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+  Version **23** was used in development.
 
-## Downloading
+## Getting started
 
-```
-git clone {repository URL}
-```
+1. Run in terminal `git clone https://github.com/a-reznikov/nodejs2024Q3-service.git`
 
-## Installing NPM modules
+1. Switch branch: `git checkout feature/part-1-rest-service`
+1. Install dependencies: `npm install`
+1. Create `.env` file or rename `.env.example` to `.env`
+1. Run application 'npm start`
+1. Open documentation: http://localhost:PORT/doc/ as a default http://localhost:4000/doc/
 
-```
-npm install
-```
-
-## Running application
-
-```
-npm start
-```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
