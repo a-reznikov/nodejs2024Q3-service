@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const foundedUser = await findEntityById<User>(id, this.users);
+    const foundedUser = await findEntityById<User>('User', id, this.users);
 
     return foundedUser;
   }

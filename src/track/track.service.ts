@@ -29,7 +29,7 @@ export class TrackService {
   }
 
   async findOne(id: string) {
-    const foundedTrack = await findEntityById<Track>(id, this.tracks);
+    const foundedTrack = await findEntityById<Track>('Track', id, this.tracks);
 
     return foundedTrack;
   }

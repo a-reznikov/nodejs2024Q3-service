@@ -27,7 +27,11 @@ export class ArtistService {
   }
 
   async findOne(id: string) {
-    const foundedArtist = await findEntityById<Artist>(id, this.artists);
+    const foundedArtist = await findEntityById<Artist>(
+      'Artist',
+      id,
+      this.artists,
+    );
 
     return foundedArtist;
   }
