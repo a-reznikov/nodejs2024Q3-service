@@ -8,6 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { getCurrentDate } from 'src/utils/date';
 import { User } from './entities/user.entity';
+import { findEntityById } from 'src/helpers/findEntity';
 
 @Injectable()
 export class UserService {
@@ -35,11 +36,7 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const foundedUser = this.users.find((user) => user.id === id);
-
-    if (!foundedUser) {
-      throw new NotFoundException(`User with ID: ${id} not found`);
-    }
+    const foundedUser = findEntityById<User>(id, this.users);
 
     return foundedUser;
   }

@@ -12,6 +12,7 @@ import {
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { validateId } from 'src/utils/id-validation';
 
 @Controller('track')
 export class TrackController {
@@ -29,8 +30,10 @@ export class TrackController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.trackService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    validateId(id);
+
+    return await this.trackService.findOne(id);
   }
 
   @Patch(':id')

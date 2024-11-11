@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { getCurrentDate } from 'src/utils/date';
+import { findEntityById } from 'src/helpers/findEntity';
 
 @Injectable()
 export class TrackService {
@@ -27,8 +27,10 @@ export class TrackService {
     return this.tracks;
   }
 
-  findOne(id: number) {
-    return `FindOne track`;
+  findOne(id: string) {
+    const foundedTrack = findEntityById<Track>(id, this.tracks);
+
+    return foundedTrack;
   }
 
   update(id: number, updateTrackDto: UpdateTrackDto) {
