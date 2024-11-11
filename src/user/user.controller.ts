@@ -10,11 +10,14 @@ import {
   ClassSerializerInterceptor,
   HttpCode,
   HttpStatus,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { isValidId } from 'src/utils/typeguards';
 
 @Controller('user')
 export class UserController {
@@ -35,9 +38,20 @@ export class UserController {
     return serializedUsers;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    if (!isValidId(id)) {
+      throw new BadRequestException('The ID must be in UUID format');
+    }
+
+    const foundedUser = await this.userService.findOne(id);
+
+    if (!foundedUser) {
+      throw new NotFoundException(`User with ID: ${id} not found`);
+    }
+
+    return new User(foundedUser);
   }
 
   @Patch(':id')

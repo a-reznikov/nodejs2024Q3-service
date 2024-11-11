@@ -21,14 +21,7 @@ export class UserService {
       updatedAt: currentDate,
     };
 
-    this.users.push({
-      id: uuidv4(),
-      login: createUserDto.login,
-      password: createUserDto.password,
-      version: 1,
-      createdAt: currentDate,
-      updatedAt: currentDate,
-    });
+    this.users.push(newUser);
 
     return newUser;
   }
@@ -37,8 +30,10 @@ export class UserService {
     return this.users;
   }
 
-  findOne(id: number) {
-    return `Find user by ID. User #${id}`;
+  async findOne(id: string) {
+    const foundedUser = this.users.find((user) => user.id === id);
+
+    return foundedUser;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
