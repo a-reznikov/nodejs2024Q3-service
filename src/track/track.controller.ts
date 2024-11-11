@@ -13,10 +13,14 @@ import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { validateId } from 'src/utils/id-validation';
+import { FavsService } from 'src/favs/favs.service';
 
 @Controller('track')
 export class TrackController {
-  constructor(private readonly trackService: TrackService) {}
+  constructor(
+    private readonly trackService: TrackService,
+    private readonly favsService: FavsService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -51,6 +55,11 @@ export class TrackController {
   async remove(@Param('id') id: string) {
     validateId(id);
 
-    return await this.trackService.remove(id);
+    const removeResult = await this.trackService.remove(id);
+    try {
+      await this.favsService.removeTrack(id);
+    } catch {}
+
+    return removeResult;
   }
 }

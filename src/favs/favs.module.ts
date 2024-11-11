@@ -13,5 +13,6 @@ import { ArtistModule } from 'src/artist/artist.module';
   ],
   controllers: [FavsController],
   providers: [FavsService],
+  exports: [FavsService],
 })
 export class FavsModule {}

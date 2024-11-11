@@ -15,6 +15,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { validateId } from 'src/utils/id-validation';
 import { TrackService } from 'src/track/track.service';
 import { AlbumService } from 'src/album/album.service';
+import { FavsService } from 'src/favs/favs.service';
 
 @Controller('artist')
 export class ArtistController {
@@ -22,6 +23,7 @@ export class ArtistController {
     private readonly artistService: ArtistService,
     private readonly trackService: TrackService,
     private readonly albumService: AlbumService,
+    private readonly favsService: FavsService,
   ) {}
 
   @Post()
@@ -60,6 +62,10 @@ export class ArtistController {
     const removeResult = await this.artistService.remove(id);
     await this.trackService.removeArtistRelations(id);
     await this.albumService.removeArtistRelations(id);
+
+    try {
+      await this.favsService.removeArtist(id);
+    } catch {}
 
     return removeResult;
   }

@@ -6,6 +6,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
 import { validateId } from 'src/utils/id-validation';
@@ -32,9 +33,15 @@ export class FavsController {
   async addTrack(@Param('id') id: string) {
     validateId(id);
 
-    const foundedTrack = await this.trackService.findOne(id);
+    try {
+      const foundedTrack = await this.trackService.findOne(id);
 
-    return await this.favsService.addTrack(foundedTrack);
+      return await this.favsService.addTrack(foundedTrack);
+    } catch (error) {
+      throw new UnprocessableEntityException(
+        `Track with ID: ${id} doesn't exist`,
+      );
+    }
   }
 
   @Post('album/:id')
@@ -42,9 +49,15 @@ export class FavsController {
   async addAlbum(@Param('id') id: string) {
     validateId(id);
 
-    const foundedAlbum = await this.albumService.findOne(id);
+    try {
+      const foundedAlbum = await this.albumService.findOne(id);
 
-    return await this.favsService.addAlbum(foundedAlbum);
+      return await this.favsService.addAlbum(foundedAlbum);
+    } catch (error) {
+      throw new UnprocessableEntityException(
+        `Album with ID: ${id} doesn't exist`,
+      );
+    }
   }
 
   @Post('artist/:id')
@@ -52,9 +65,15 @@ export class FavsController {
   async addArtist(@Param('id') id: string) {
     validateId(id);
 
-    const foundedArtist = await this.artistService.findOne(id);
+    try {
+      const foundedArtist = await this.artistService.findOne(id);
 
-    return await this.favsService.addArtist(foundedArtist);
+      return await this.favsService.addArtist(foundedArtist);
+    } catch (error) {
+      throw new UnprocessableEntityException(
+        `Artist with ID: ${id} doesn't exist`,
+      );
+    }
   }
 
   @Delete('track/:id')

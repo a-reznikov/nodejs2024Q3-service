@@ -5,7 +5,7 @@ export const removeEntityById = async <EntityType extends { id: string }>(
   entityId: string,
   entities: EntityType[],
 ): Promise<string> => {
-  const entityIndex = entities.findIndex((user) => user.id === entityId);
+  const entityIndex = entities.findIndex((entity) => entity.id === entityId);
 
   if (entityIndex === -1) {
     throw new NotFoundException(`${entityName} with ID: ${entityId} not found`);
