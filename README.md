@@ -12,7 +12,7 @@
 1. Switch branch: `git checkout feature/part-1-rest-service`
 1. Install dependencies: `npm install`
 1. Create `.env` file or rename `.env.example` to `.env`
-1. Run application 'npm start`
+1. Run application `npm run start`
 1. Open documentation: http://localhost:PORT/doc/ as a default http://localhost:4000/doc/
 
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
