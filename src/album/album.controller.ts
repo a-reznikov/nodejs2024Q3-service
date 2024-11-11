@@ -62,8 +62,8 @@ export class AlbumController {
 
     try {
       await this.favsService.removeAlbum(id);
-    } catch {}
-
-    return removeResult;
+    } finally {
+      return removeResult;
+    }
   }
 }

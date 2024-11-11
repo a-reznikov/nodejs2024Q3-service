@@ -65,8 +65,8 @@ export class ArtistController {
 
     try {
       await this.favsService.removeArtist(id);
-    } catch {}
-
-    return removeResult;
+    } finally {
+      return removeResult;
+    }
   }
 }

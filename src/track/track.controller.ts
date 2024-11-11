@@ -56,10 +56,11 @@ export class TrackController {
     validateId(id);
 
     const removeResult = await this.trackService.remove(id);
+
     try {
       await this.favsService.removeTrack(id);
-    } catch {}
-
-    return removeResult;
+    } finally {
+      return removeResult;
+    }
   }
 }
