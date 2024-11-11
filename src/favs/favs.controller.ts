@@ -57,8 +57,27 @@ export class FavsController {
     return await this.favsService.addArtist(foundedArtist);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favsService.remove(+id);
+  @Delete('track/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeTrack(@Param('id') id: string) {
+    validateId(id);
+
+    return await this.favsService.removeTrack(id);
+  }
+
+  @Delete('album/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeAlbum(@Param('id') id: string) {
+    validateId(id);
+
+    return await this.favsService.removeAlbum(id);
+  }
+
+  @Delete('artist/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeArtist(@Param('id') id: string) {
+    validateId(id);
+
+    return await this.favsService.removeArtist(id);
   }
 }

@@ -3,6 +3,7 @@ import { Fav } from './entities/fav.entity';
 import { Track } from 'src/track/entities/track.entity';
 import { Album } from 'src/album/entities/album.entity';
 import { Artist } from 'src/artist/entities/artist.entity';
+import { removeEntityById } from 'src/helpers/removeEntity';
 
 @Injectable()
 export class FavsService {
@@ -28,7 +29,15 @@ export class FavsService {
     return this.favorites.artists.push(artist);
   }
 
-  async remove(id: number) {
-    return `Delete`;
+  async removeTrack(id: string) {
+    return await removeEntityById('Track', id, this.favorites.tracks);
+  }
+
+  async removeAlbum(id: string) {
+    return await removeEntityById('Album', id, this.favorites.albums);
+  }
+
+  async removeArtist(id: string) {
+    return await removeEntityById('Artist', id, this.favorites.artists);
   }
 }
