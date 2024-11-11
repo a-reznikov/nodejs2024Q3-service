@@ -1,14 +1,11 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { getCurrentDate } from 'src/utils/date';
 import { User } from './entities/user.entity';
 import { findEntityById } from 'src/helpers/findEntity';
+import { removeEntityById } from 'src/helpers/removeEntity';
 
 @Injectable()
 export class UserService {
@@ -36,7 +33,7 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const foundedUser = findEntityById<User>(id, this.users);
+    const foundedUser = await findEntityById<User>(id, this.users);
 
     return foundedUser;
   }
@@ -56,13 +53,6 @@ export class UserService {
   }
 
   async remove(id: string) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-
-    if (userIndex === -1) {
-      throw new NotFoundException(`User with ID: ${id} not found`);
-    }
-
-    this.users.splice(userIndex, 1);
-    return `User has been deleted`;
+    return await removeEntityById('User', id, this.users);
   }
 }

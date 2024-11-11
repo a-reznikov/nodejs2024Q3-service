@@ -1,9 +1,9 @@
 import { NotFoundException } from '@nestjs/common';
 
-export const findEntityById = <EntityType extends { id: string }>(
+export const findEntityById = async <EntityType extends { id: string }>(
   id: string,
   entities: EntityType[],
-): EntityType => {
+): Promise<EntityType> => {
   const foundedEntity = entities.find((entity) => entity.id === id);
 
   if (!foundedEntity) {

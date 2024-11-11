@@ -4,6 +4,7 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { findEntityById } from 'src/helpers/findEntity';
+import { removeEntityById } from 'src/helpers/removeEntity';
 
 @Injectable()
 export class TrackService {
@@ -27,17 +28,24 @@ export class TrackService {
     return this.tracks;
   }
 
-  findOne(id: string) {
-    const foundedTrack = findEntityById<Track>(id, this.tracks);
+  async findOne(id: string) {
+    const foundedTrack = await findEntityById<Track>(id, this.tracks);
 
     return foundedTrack;
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `Updated track`;
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const foundedTrack = await this.findOne(id);
+
+    foundedTrack.name = updateTrackDto.name || foundedTrack.name;
+    foundedTrack.duration = updateTrackDto.duration || foundedTrack.duration;
+    foundedTrack.artistId = updateTrackDto.artistId || foundedTrack.artistId;
+    foundedTrack.albumId = updateTrackDto.albumId || foundedTrack.albumId;
+
+    return foundedTrack;
   }
 
-  remove(id: number) {
-    return `Deleted`;
+  async remove(id: string) {
+    return await removeEntityById('Track', id, this.tracks);
   }
 }
