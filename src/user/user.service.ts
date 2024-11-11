@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -33,14 +37,35 @@ export class UserService {
   async findOne(id: string) {
     const foundedUser = this.users.find((user) => user.id === id);
 
+    if (!foundedUser) {
+      throw new NotFoundException(`User with ID: ${id} not found`);
+    }
+
     return foundedUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `Update user by ID. User #${id}, data: ${updateUserDto}`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const foundedUser = await this.findOne(id);
+
+    if (foundedUser.password !== updateUserDto.oldPassword) {
+      throw new ForbiddenException('OldPassword is wrong');
+    }
+
+    foundedUser.password = updateUserDto.newPassword;
+    foundedUser.version += 1;
+    foundedUser.updatedAt = getCurrentDate();
+
+    return foundedUser;
   }
 
-  remove(id: number) {
-    return `Delete user by ID. User #${id}`;
+  async remove(id: string) {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) {
+      throw new NotFoundException(`User with ID: ${id} not found`);
+    }
+
+    this.users.splice(userIndex, 1);
+    return `User has been deleted`;
   }
 }

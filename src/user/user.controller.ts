@@ -3,21 +3,19 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
   HttpCode,
   HttpStatus,
-  BadRequestException,
-  NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { isValidId } from 'src/utils/typeguards';
+import { validateId } from 'src/utils/id-validation';
 
 @Controller('user')
 export class UserController {
@@ -41,26 +39,24 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    if (!isValidId(id)) {
-      throw new BadRequestException('The ID must be in UUID format');
-    }
+    validateId(id);
 
-    const foundedUser = await this.userService.findOne(id);
-
-    if (!foundedUser) {
-      throw new NotFoundException(`User with ID: ${id} not found`);
-    }
-
-    return new User(foundedUser);
+    return new User(await this.userService.findOne(id));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    validateId(id);
+
+    return new User(await this.userService.update(id, updateUserDto));
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: string) {
+    validateId(id);
+
+    return await this.userService.remove(id);
   }
 }
