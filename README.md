@@ -8,7 +8,7 @@
 ## Getting started
 
 1. Run in terminal `git clone https://github.com/a-reznikov/nodejs2024Q3-service.git`
-
+1. Go to the root dir of the project `cd nodejs2024Q3-service`
 1. Switch branch: `git checkout feature/part-1-rest-service`
 1. Install dependencies: `npm install`
 1. Create `.env` file or rename `.env.example` to `.env`
