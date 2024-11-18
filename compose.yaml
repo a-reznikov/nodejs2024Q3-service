@@ -1,0 +1,55 @@
+services:
+  app:
+    container_name: nest_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - home-library
+    depends_on:
+      - postgres
+    environment:
+      - PORT=${PORT}
+    restart: always
+  postgres:
+    container_name: pg_database
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - home-library
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
+    restart: always
+
+networks:
+  home-library:
+    name: home-library
+    driver: bridge
+
+volumes:
+  pgdata:
+  pglogs:
