@@ -20,7 +20,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "docker:up": "docker compose up"
+    "docker:up": "docker compose up",
+    "docker:scan-app": "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy --scanners vuln image nodejs2024q3-service-app",
+    "docker:scan-pg": "docker run --rm -v //var/run/docker.sock:/var/run/docker.sock aquasec/trivy --scanners vuln image nodejs2024q3-service-postgres"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
