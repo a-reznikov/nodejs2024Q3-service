@@ -17,6 +17,15 @@
 
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Vulnerabilities scanning
+
+Run in the terminal the following commands to scan images:
+
+```
+npm run docker:scan-app
+npm run docker:scan-pg
+```
+
 ## Testing
 
 After application running open new terminal and enter:

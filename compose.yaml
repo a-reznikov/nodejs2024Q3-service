@@ -4,7 +4,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: npm run start
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
     volumes:
       - ./src:/app/src
       - /app/node_modules
