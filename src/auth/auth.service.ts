@@ -6,6 +6,7 @@ import {
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthResponse, TokenPayload } from './types';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +29,9 @@ export class AuthService {
   async signIn(login: string, password: string): Promise<AuthResponse> {
     const user = await this.userService.findByLogin(login);
 
-    if (user?.password !== password) {
+    const isValidPassword = await compare(password, user.password);
+
+    if (!isValidPassword) {
       throw new ForbiddenException('Password is wrong');
     }
 

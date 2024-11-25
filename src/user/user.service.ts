@@ -11,19 +11,11 @@ import { getCurrentDate } from 'src/utils/date';
 import { User } from './entities/user.entity';
 import { findEntityById } from 'src/helpers/findEntity';
 import { removeEntityById } from 'src/helpers/removeEntity';
+import { compare, hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [
-    {
-      id: '966ee829-b617-4ce7-a081-9febe03a082e',
-      login: 'user',
-      password: 'string',
-      version: 1,
-      createdAt: 1732557982319,
-      updatedAt: 1732557982319,
-    },
-  ];
+  private readonly users: User[] = [];
 
   async create(createUserDto: CreateUserDto) {
     const foundedUser = this.users.find(
@@ -38,10 +30,15 @@ export class UserService {
 
     const currentDate = getCurrentDate();
 
+    const hashedPassword = await hash(
+      createUserDto.password,
+      Number(process.env.CRYPT_SALT),
+    );
+
     const newUser: User = {
       id: uuidv4(),
       login: createUserDto.login,
-      password: createUserDto.password,
+      password: hashedPassword,
       version: 1,
       createdAt: currentDate,
       updatedAt: currentDate,
@@ -75,11 +72,21 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const foundedUser = await this.findOne(id);
 
-    if (foundedUser.password !== updateUserDto.oldPassword) {
+    const isValidPassword = await compare(
+      updateUserDto.oldPassword,
+      foundedUser.password,
+    );
+
+    if (!isValidPassword) {
       throw new ForbiddenException('OldPassword is wrong');
     }
 
-    foundedUser.password = updateUserDto.newPassword;
+    const hashedPassword = await hash(
+      updateUserDto.newPassword,
+      Number(process.env.CRYPT_SALT),
+    );
+
+    foundedUser.password = hashedPassword;
     foundedUser.version += 1;
     foundedUser.updatedAt = getCurrentDate();
 
