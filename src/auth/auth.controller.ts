@@ -5,9 +5,15 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @HttpCode(HttpStatus.CREATED)
+  @Post('signup')
+  async signUp(@Body() signUpDto: Record<string, any>) {
+    return await this.authService.signUp(signUpDto.login, signUpDto.password);
+  }
+
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  async signIn(@Body() signInDto: Record<string, any>) {
+    return await this.authService.signIn(signInDto.login, signInDto.password);
   }
 }

@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,7 +13,16 @@ import { removeEntityById } from 'src/helpers/removeEntity';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [];
+  private readonly users: User[] = [
+    {
+      id: '966ee829-b617-4ce7-a081-9febe03a082e',
+      login: 'string',
+      password: 'string',
+      version: 1,
+      createdAt: 1732557982319,
+      updatedAt: 1732557982319,
+    },
+  ];
 
   async create(createUserDto: CreateUserDto) {
     const currentDate = getCurrentDate();
@@ -34,6 +47,16 @@ export class UserService {
 
   async findOne(id: string) {
     const foundedUser = await findEntityById<User>('User', id, this.users);
+
+    return foundedUser;
+  }
+
+  async findByLogin(login: string) {
+    const foundedUser = this.users.find((user) => user.login === login);
+
+    if (!foundedUser) {
+      throw new NotFoundException(`User with login: ${login} not found`);
+    }
 
     return foundedUser;
   }
