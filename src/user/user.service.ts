@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -25,6 +26,16 @@ export class UserService {
   ];
 
   async create(createUserDto: CreateUserDto) {
+    const foundedUser = this.users.find(
+      (user) => user.login === createUserDto.login,
+    );
+
+    if (foundedUser) {
+      throw new BadRequestException(
+        `User with login ${createUserDto.login} already exists`,
+      );
+    }
+
     const currentDate = getCurrentDate();
 
     const newUser: User = {
