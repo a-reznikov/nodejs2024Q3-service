@@ -16,7 +16,7 @@ export class UserService {
   private readonly users: User[] = [
     {
       id: '966ee829-b617-4ce7-a081-9febe03a082e',
-      login: 'string',
+      login: 'user',
       password: 'string',
       version: 1,
       createdAt: 1732557982319,

@@ -1,6 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { AuthResponse, TokenPayload } from './types';
 
 @Injectable()
 export class AuthService {
@@ -9,25 +14,56 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(login: string, password: string): Promise<{ token: string }> {
+  private generateTokens = async (payload: TokenPayload) => ({
+    accessToken: await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET_KEY,
+      expiresIn: process.env.TOKEN_EXPIRE_TIME,
+    }),
+    refreshToken: await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET_REFRESH_KEY,
+      expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
+    }),
+  });
+
+  async signIn(login: string, password: string): Promise<AuthResponse> {
     const user = await this.userService.findByLogin(login);
 
-    console.log(user);
-
     if (user?.password !== password) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException('Password is wrong');
     }
 
-    const payload = { sub: user.id, username: user.login };
+    console.log('Founded user', user);
 
-    return {
-      token: await this.jwtService.signAsync(payload),
-    };
+    const payload = { userId: user.id, login: user.login };
+
+    console.log(process.env.TOKEN_EXPIRE_TIME);
+
+    return await this.generateTokens(payload);
   }
 
   async signUp(login: string, password: string) {
-    await this.userService.create({ login, password });
+    return await this.userService.create({ login, password });
+  }
 
-    return 'Successful signup';
+  async refresh(refreshToken: string): Promise<AuthResponse> {
+    if (!refreshToken) {
+      throw new UnauthorizedException('RefreshToken has been missed');
+    }
+
+    try {
+      const verified: TokenPayload = await this.jwtService.verifyAsync(
+        refreshToken,
+      );
+
+      console.log(verified);
+
+      const user = await this.userService.findOne(verified.userId);
+
+      const payload = { userId: user.id, login: user.login };
+
+      return this.generateTokens(payload);
+    } catch {
+      throw new ForbiddenException('Invalid or expired refresh token');
+    }
   }
 }
