@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -12,6 +13,7 @@ import { Public } from './decorators/public';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { User } from 'src/user/entities/user.entity';
 import { AuthUserDto } from './dto/auth-user.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -37,6 +39,7 @@ export class AuthController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(@Body() refreshTokenDto: RefreshTokenDto) {

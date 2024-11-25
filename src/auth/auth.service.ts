@@ -32,11 +32,7 @@ export class AuthService {
       throw new ForbiddenException('Password is wrong');
     }
 
-    console.log('Founded user', user);
-
     const payload = { userId: user.id, login: user.login };
-
-    console.log(process.env.TOKEN_EXPIRE_TIME);
 
     return await this.generateTokens(payload);
   }
@@ -53,6 +49,9 @@ export class AuthService {
     try {
       const verified: TokenPayload = await this.jwtService.verifyAsync(
         refreshToken,
+        {
+          secret: process.env.JWT_SECRET_REFRESH_KEY,
+        },
       );
 
       console.log(verified);

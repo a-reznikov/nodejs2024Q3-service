@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -31,7 +31,7 @@ export class UserService {
     );
 
     if (foundedUser) {
-      throw new BadRequestException(
+      throw new ConflictException(
         `User with login ${createUserDto.login} already exists`,
       );
     }

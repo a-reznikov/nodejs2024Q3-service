@@ -183,12 +183,38 @@ paths:
                 - login
                 - password
       responses:
-        204:
+        201:
           description: Successful signup
         400:
           description: Bad request
         409:
           description: Conflict. Login already exists
+  /auth/refresh:
+    post:
+      tags:
+        - Refresh
+      summary: Refresh
+      description: Refresh JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: example
+              properties:
+                refreshToken:
+                  type: string
+                  description: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhOWI3YTcyNi1mMTUzLTRlNzMtOTg4NC01Y2Y5MDgwNmU2ZjIiLCJsb2dpbiI6InN0cmluZyIsImlhdCI6MTczMjU2OTQzMCwiZXhwIjoxNzMyNjU1ODMwfQ.sEAG8jdbzmDUDqB8uOG87H8pjnwst2enRACb_95qyQ4
+              required:
+                - refreshToken
+      responses:
+        201:
+          description: Successful token updates
+        400:
+          description: RefreshToken is required
+        403:
+          description: Refresh token is invalid or expired
   /user:
     get:
       tags:
