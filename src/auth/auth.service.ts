@@ -57,8 +57,6 @@ export class AuthService {
         },
       );
 
-      console.log(verified);
-
       const user = await this.userService.findOne(verified.userId);
 
       const payload = { userId: user.id, login: user.login };
